@@ -1,6 +1,11 @@
 
 
-function Guitar({guitar}) {
+ function Guitar({guitar, addtoCart }) {
+
+  
+
+
+  
 /*const [auth, setAuth]= useState(false)
    useEffect(()=>{
     if(auth){
@@ -17,7 +22,7 @@ function Guitar({guitar}) {
    
     <>
 
-            <div className="col-md-6 col-lg-4 my-4 row align-items-center">
+            <div className="col-md-6 col-lg-4 my-4 row align-items-center" key={guitar.id}>
                 <div className="col-4">
                     <img className="img-fluid" src={`/img/${guitar.image}.jpg`} alt="imagen guitarra" />
                 </div>
@@ -28,6 +33,7 @@ function Guitar({guitar}) {
                     <button 
                         type="button"
                         className="btn btn-dark w-100"
+                        onClick={()=>addtoCart(guitar)}
                     >Agregar al Carrito</button>
                 </div>
           

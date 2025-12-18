@@ -3,19 +3,89 @@ import './App.css'
 import Header from './Header'
 import Guitar from './Guitar'
 import { db } from './data/db'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function App() {
+// Para que local storage permanezca 
 
-  const [data, setData] = useState(db)
- let cont = 0
+const initialCart=( )=>{
+const localStorageCart = localStorage.getItem('cart') 
+return localStorageCart ? JSON.parse(localStorageCart): []
+}
+
+
+  const [data] = useState(db);
+  const [cart, setCart] = useState(initialCart)
+const MAX_ITEM = 5;
+const MIN_ITEM = 1;
+
+useEffect(()=>{
+ localStorage.setItem('cart', JSON.stringify(cart))
+},[cart])
+
+// useEFFET
+
+// Local Storage
+
+
+
+  const clearCart = ()=>{
+    setCart([])
+  }
+  const addtoCart = (item)=>{
+    const itemExist = cart.findIndex(guitar => guitar.id === item.id)
+    
+    if(itemExist >= 0){
+      if(cart[itemExist].quantity >= MAX_ITEM) return
+     const updateCart = [...cart]
+     updateCart[itemExist].quantity++
+     setCart(updateCart)
+
+    }else{
+    item.quantity= 1
+      setCart([...cart, item])
+    }
+
+  }
+
+    const removeItem = (id)=>{
+   setCart( prevCart => prevCart.filter(guitar => guitar.id !== id))
+  }
+
+  const updateItem = (id)=>{
+ const newUpdate = cart.map(item => {
+  if(item.id === id && item.quantity < MAX_ITEM ){
+    return{
+    ...item, 
+    quantity: item.quantity + 1
+
+    }
+    
+  }
+ return item
+ })
+setCart(newUpdate)
+
+  
+  }
+
+  const restItem = (id)=>{
+const newRestItem = cart.map( (item)=>{
+  if(item.id === id && item.quantity > MIN_ITEM ){
+    return{
+      ...item,
+      quantity: item.quantity - 1
+    }
+  }
+  return item
+} )
+setCart(newRestItem)
+  }
  
-       if( cont < 12 ){
-        cont +1
-       }
+      
   return (
     <>
-   <Header/>
+   <Header cart={cart} clearCart={clearCart} updateItem={updateItem} restItem={restItem} removeItem={removeItem} />
    
     <main className="container-xl mt-5">
         <h2 className="text-center">Nuestra Colección</h2>
@@ -23,7 +93,7 @@ function App() {
       <div className="row mt-5">
       {data.map((guitar)=>(
        
-        <Guitar key={guitar.id} guitar={guitar} />
+        <Guitar key={guitar.id} guitar={guitar}   addtoCart = {addtoCart}  />
       ))}
 
         
